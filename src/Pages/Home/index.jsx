@@ -1,4 +1,4 @@
-import { Button, Col, Form, notification, Select, Table } from "antd";
+import { Button, Col, Form, Input, notification, Select, Table } from "antd";
 import { GetCitiesByStateAsync } from "../../Api/CitiesApi";
 import { useEffect, useState } from "react";
 import { BRAZIL_STATES } from "../../Utils/constantsStates";
@@ -6,10 +6,9 @@ import { BRAZIL_STATES } from "../../Utils/constantsStates";
 const HomePage = () => {
 
     const states = BRAZIL_STATES;
-    
+    const [form] = Form.useForm();
     const [api, contextHolder] = notification.useNotification();
     const [loading, setLoading] = useState(false);
-    const [selectedState, setSelectedState] = useState("");
     const [cities, setCities] = useState([]);
     const [pagination, setPagination] = useState({
         current: 1,
@@ -24,18 +23,17 @@ const HomePage = () => {
         });
     };
 
-    const searchByState = (values) => {
-        const stateValue = values?.state || selectedState;
-        if (!stateValue) return;
-
-        setSelectedState(stateValue); 
-
+    const searchByState = () => {
         setLoading(true)
+
+        var dataForm = form.getFieldsValue();
 
         const data = {
             page: pagination.current,
             sizePage: pagination.pageSize,
-            state: values.state
+            state: dataForm.state,
+            city: dataForm.city,
+            ibge_code: dataForm.ibge_code
         };
 
         GetCitiesByStateAsync(data)
@@ -65,9 +63,8 @@ const HomePage = () => {
     };
 
     useEffect(() => {
-        if (selectedState) {
-            searchByState({ state: selectedState });
-        }
+        var dataForm = form.getFieldsValue();
+        if(dataForm.state) searchByState();
     }, [pagination.current, pagination.pageSize]);
 
     const columns = [
@@ -87,7 +84,7 @@ const HomePage = () => {
         <>
             {contextHolder}
             <Col style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: 30, minHeight: '100dvh', height: '100dvh', }}>
-                <Col xs={10} sm={10} md={10} lg={10} xl={10} xxl={10} style={{ width: "100%", display: "flex", flexDirection: "column", gap: 50 }}>
+                <Col xs={10} sm={10} md={10} lg={10} xl={10} xxl={10} style={{ width: "100%", display: "flex", flexDirection: "column", gap: 80 }}>
 
                     <Col style={{ display: "flex", flexDirection: "column" }}>
                         <span style={{ fontSize: 30, fontWeight: `bold` }} >Olá! Seja bem-vindo(a)!</span>
@@ -95,19 +92,31 @@ const HomePage = () => {
                     </Col>
                     
                     <Form
+                        form={form}
+                        layout="vertical"
                         onFinish={searchByState}
                     >
                         <Col >
-                            <Form.Item label="Estado" name="state">
-                                <Select onChange={(value) => {
-                                    setSelectedState(value)
-                                }}>
+                            <Form.Item 
+                                label="Estado" 
+                                name="state" 
+                                rules={[{ required: true, message: "É obrigatório selecionar um estado" }]}
+                            >
+                                <Select>
                                     {states.map((state) => (
                                         <Select.Option key={state.value} value={state.value}>
                                             {state.name}
                                         </Select.Option>
                                     ))}
                                 </Select>
+                            </Form.Item>
+
+                            <Form.Item label="Município " name="city">
+                                <Input />
+                            </Form.Item>
+
+                            <Form.Item label="Codigo IBGE" name="ibge_code">
+                                <Input type="number" />
                             </Form.Item>
 
                             <Button htmlType="submit" color="default" variant="outlined" > Pesquisar  </Button>
