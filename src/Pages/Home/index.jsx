@@ -84,7 +84,7 @@ const HomePage = () => {
         <>
             {contextHolder}
             <Col style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: 30, minHeight: '100dvh', height: '100dvh', }}>
-                <Col xs={10} sm={10} md={10} lg={10} xl={10} xxl={10} style={{ width: "100%", display: "flex", flexDirection: "column", gap: 80 }}>
+                <Col xs={24} sm={24} md={24} lg={10} xl={10} xxl={10} style={{ width: "100%", display: "flex", flexDirection: "column", gap: 80 }}>
 
                     <Col style={{ display: "flex", flexDirection: "column" }}>
                         <span style={{ fontSize: 30, fontWeight: `bold` }} >Olá! Seja bem-vindo(a)!</span>
