@@ -19,7 +19,7 @@ const HomePage = () => {
     const openNotificationError = (err) => {
         api.error({
             title: 'Ops. Houve um problema!',
-            description: err?.ErrorDetails?.Message ?? "Houve um erro inesperado ao tentar realizar a pesquisa de municipios.",
+            description: err?.mensagem ?? "Houve um erro inesperado ao tentar realizar a pesquisa de municipios.",
         });
     };
 
